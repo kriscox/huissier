@@ -2,6 +2,9 @@ import os
 
 
 class input_file:
+    """
+    Class representing all input file for the bailiff
+    """
     leroy_folder_root = '/opt/scripts/huissier/tmp/leroy'
     modero_folder_root = '/opt/scripts/huissier/tmp/modero'
     modero_folder_upload = '/data/modero/ToModero2'

@@ -6,7 +6,9 @@ import Identity
 
 
 class SSHConnection:
-
+    """"
+    This class allow to put and get files from an SSH server
+    """
     conn: paramiko.transport = None
     sftp: paramiko.SFTPClient
     ssh: paramiko.SSHClient
@@ -53,8 +55,7 @@ class SSHConnection:
         return self.conn.is_active()
 
     def getFiles(self, _source_path: str, _destination_path: str):
-        """ Retrieves all files on the SSH server and puts then in the given path. After each download it removes
-        the original file on the server side
+        """ Retrieves all files on the SSH server and puts then in the given path. After each download it removes the original file on the server side.
 
         :rtype: sshConnection
         :param _source_path:
@@ -68,5 +69,33 @@ class SSHConnection:
                 # remove the downloaded files
                 self.sftp.remove(os.path.join(_source_path, _file))
             else:
-                raise Exception("ERROR: File not correctly downloaded")
+                raise Exception(f"""ERROR: File {_file} from directory {_source_path} not correctly downloaded""")
         return self
+
+    def putFiles(self, _source_path: str, _destination_path: str, _extension: str):
+        """Put all files in the source directory and put them in the given destination directory.
+
+        :rtype: sshConnection
+        :param _extension:
+            extension of the files to server
+        :param _source_path:
+            path on SFTP server
+        :param _destination_path:
+            path on local server
+        """
+        for _file in os.listdir(_source_path):
+            if _file.endswith(_extension):
+                self.sftp.put(os.path.join(_source_path, _file), os.path.join(_destination_path, _file))
+                # Check if file is uploaded successfully
+                if _file not in self.sftp.listdir(_destination_path):
+                    raise Exception(f"""Error: File {_file} in directory {_source_path}not correctly uploaded""")
+
+    def close(self):
+        """
+        Close the current connections
+        """
+        if self.isActive():
+            self.conn.close()
+
+    def __delete__(self, instance):
+        return self.close()
