@@ -1,48 +1,102 @@
+import os
+import shutil
+
 import SqlConnection
+from input_files import input_files
+from myconfig import MyConfig
 
-SDBConn = SqlConnection()
+SDBConn = SqlConnection.SQLConnection()
 
+
+
+def lastRunSuccessful(_directories=None) -> bool:
+    """ Check if last run didn't leave files behind
+
+    :param _directories:
+        dict of key/values with all local directories as values and the keys as their names
+    :return:
+        return true in case the last run was successfully cleaned up
+    """
+    if _directories is not None:
+        for _dir in _directories.values:
+            if os.listdir(_dir) != 0:
+                return False
+
+    return True
+
+
+
+def move_files_tmp(_location: str):
+    """Move files in directory to /tmp and remove existing directories and the files included in them
+
+    :param _location: Directory to tread
+    :type _location: name of the directory
+    """
+    for _f in os.listdir(_location):
+        _file = os.path.join("/", _location, _f)
+        if os.path.isdir(_file):
+            shutil.rmtree(_file, ignore_errors=True)
+        else:
+            shutil.move(_file, '/tmp')
+
+
+
+def clear_files(_location: str):
+    """Remove all files and directories from the location
+
+    :param _location: Directory to clear
+    :type _location: name of the directory
+    """
+    for _f in os.listdir(_location):
+        _file = os.path.join("/", _location, _f)
+        if os.path.isdir(_file):
+            shutil.rmtree(_file, ignore_errors=True)
+        else:
+            os.remove(_file)
+
+
+
+def cleanUp(_config):
+    """Clean up temporary files to be ready for the next run
+
+    The attribution file send to SAP is kept in /tmp for troubleshooting purposes
+
+    :param _config: configuration information about directories
+    """
+    # copy attribution file to /tmp
+    move_files_tmp(_config["root"]["sap"])
+    # remove all files in the tmp directories
+    for _key in [_key for _key in _config["root"].keys()
+                 if "sap" != _key]:
+        clear_files(_config["root"][_key])
+
+
+
+########################################################################################################################
+#    Main part of the program which gives the actual order of the steps to be taken                                    #
+#                                                                                                                      #
+#    Actual work is found in classes                                                                                   #
+########################################################################################################################
 if __name__ == '__main__':
-    
+    # read config from file myconfig.py
+    config = MyConfig()
 
+    # check if last run did it's cleanup properly
+    if not lastRunSuccessful(config["root"]):
+        raise Exception("Last run wasn't successful, some files were trailing")
 
+    # Get files from SFTP site and unpack them
+    files: input_files = input_files.input_files(config["root"]["input"], config["download"]["sap"])
+    files.getInput()
 
+    # Process files
+    files.process(config)
 
+    # Zip the files
+    files.pack(config)
 
-# if len(os.listdir(input_folder) or os.listdir(leroy_folder_root) or os.listdir(modero_folder_root) or os.listdir(sap_folder_root)) != 0  :
-if len(os.listdir(input_folder) or os.listdir(leroy_folder_root) or os.listdir(modero_folder_root)) != 0:
-    print("folders not empty")
-    sys.exit(1)
+    # Upload files
+    files.upload(config)
 
-## Main run
-try:
-    ### Crée la connexion vers la DB de huissier
-    conn = pyodbc.connect(
-        'Driver={ODBC Driver 17 for SQL Server}; Server=SV009; Database=HUISSIER; UID=script_huissier; PWD=WZswlXV7A5B')
-    cursor = conn.cursor()
-
-    ### Check all VCS to Modero
-    vcs_list = [row[0] for row in cursor.execute("SELECT VCS FROM CASES").fetchall()]
-    # log = open("/opt/scripts/huissier/log.csv", 'a', encoding="utf-8", newline="")
-    # log_writer = csv.writer(log)
-
-    downloadXmlFiles()  # Telechargement et extraction des fichiers téléchargés
-    extract_zipped_files(input_folder)
-
-    processFiles()  # d'abord exécuter les create (insertion dans la db et envoi vers modero)
-    processPdfAndPhotos()  # Deplacer les photos et les pdf vers le bon huissier
-
-    compress_output_files()
-    if uploadFiles():
-        clear_files(input_folder)  # Nettoyer le dossier des entrants
-        clear_files(leroy_folder_root)  # Nettoyer le dossier leroy
-        clear_files(modero_folder_root)  # Nettoyer le dossier modero
-
-    # Chargement des fichiers vers les sftp de destination
-
-    if uploadAttributionFile():  # chargement du fichier d'attribution vers SAP
-        move_files_tmp(sap_folder_root)  # Nettoyer le dossier sap en envoyer les vers /tmp
-        # clear_files(sap_folder_root)#Nettoyer le dossier sap
-
-except Exception as e:
-    print(e)
+    # Clean up temporary files
+    cleanUp(config)

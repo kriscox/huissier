@@ -27,3 +27,7 @@ class vcsList:
         for item in self.List:
             DBConn.Execute(f"""INSERT INTO dbo.CASES VALUES('{item}', 1)""")
         return self
+
+    def __delete__(self, instance):
+        self.save()
+        return self
