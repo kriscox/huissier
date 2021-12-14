@@ -3,7 +3,6 @@ myconfig = {
         "leroy": "/opt/scripts/huissier/tmp/leroy",
         "modero": "/opt/scripts/huissier/tmp/modero",
         "sap": "/opt/scripts/huissier/tmp/sap",
-        #        "output": "/opt/scripts/huissier/tmp/output_files",
         "input": "/opt/scripts/huissier/tmp/input_files"
     },
     "upload": {
