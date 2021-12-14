@@ -4,22 +4,22 @@ import xml.etree.ElementTree as xmlET
 
 import myconfig
 import vcs
-from attribution_file import attribution_file
+from attributionfile import AttributionFile
 
 
 
-class create_file:
+class CreateFile:
     xmlTree = xmlET.ElementTree()
     filename: str = None
     directory = None
-    vcs_list = vcs.vcsList()
-    attrFile: attribution_file = None
+    vcs_list = vcs.VcsList()
+    attrFile: AttributionFile = None
     conf = myconfig.MyConfig()
     moderoTree = xmlET.ElementTree(xmlET.Element("Dossiers")).getroot()
     leroyTree = xmlET.ElementTree(xmlET.Element("Dossiers")).getroot()
 
 
-    def __init__(self, _file, _inputDir, _attrFile: attribution_file):
+    def __init__(self, _file, _inputDir, _attrFile: AttributionFile):
         """Create an object representing the XML content of the file _file in directory _inputDir
 
                     :param _file: file containing the XML tree
@@ -99,7 +99,7 @@ class create_file:
         elif _bailiff == "leroy":
             self.leroyTree.append(_dossier)
         else:
-            raise NotImplementedError("""Bailiff {_bailiff} not implemented yet in create_file.py""")
+            raise NotImplementedError("""Bailiff {_bailiff} not implemented yet in createfile.py""")
 
         ##################
         # Move documents #

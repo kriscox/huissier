@@ -5,7 +5,7 @@ import myconfig
 
 
 
-class attribution_file:
+class AttributionFile:
     directory = myconfig.MyConfig()["root"]["sap"]
     xmlTree: xmlET.ElementTree = xmlET.ElementTree(xmlET.Element("Dossiers"))
     filename = None
@@ -57,8 +57,9 @@ class attribution_file:
         _fileIO = open(os.path.join(self.directory, self.filename), "wb")
         self.xmlTree.write(_fileIO, encoding='utf-8', xml_declaration=True)
 
+
     def __del__(self):
         """Save the file on deletion of the object.
 
         """
-        self.save()
+        self.Save()

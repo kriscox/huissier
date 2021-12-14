@@ -2,7 +2,7 @@ import os
 import shutil
 
 import SqlConnection
-from input_files import input_files
+from inputfiles import InputFiles
 from myconfig import MyConfig
 
 SDBConn = SqlConnection.SQLConnection()
@@ -71,7 +71,6 @@ def cleanUp(_config):
         clear_files(_config["root"][_key])
 
 
-
 ########################################################################################################################
 #    Main part of the program which gives the actual order of the steps to be taken                                    #
 #                                                                                                                      #
@@ -86,7 +85,7 @@ if __name__ == '__main__':
         raise Exception("Last run wasn't successful, some files were trailing")
 
     # Get files from SFTP site and unpack them
-    files: input_files = input_files.input_files(config["root"]["input"], config["download"]["sap"])
+    files: InputFiles = InputFiles(config["root"]["input"], config["download"]["sap"])
     files.getInput()
 
     # Process files

@@ -1,12 +1,13 @@
 import os
 import zipfile
 
-from create_file import create_file
+from attributionfile import AttributionFile
+from createfile import CreateFile
 from sshConnection import SSHConnection
 
 
 
-class input_files:
+class InputFiles:
     """
     Class representing all input file for the bailiff
 
@@ -103,9 +104,20 @@ class input_files:
             _inputFiles = [_f for _f in os.listdir(_inputDir)
                            if _f.endswith('.xml')]
 
+            # if no files found, continue with next directory
+            if _inputFiles is None:
+                continue
+
+            # Create attribution file
+            _attrFileName = "ATTR_" + _dir.rsplit("_", 1)[0]
+            _attrFile = AttributionFile(_attrFileName)
+
             # process each XML file found
             for _file in _inputFiles:
-                create_file(_file, _inputDir).process()
+                CreateFile(_file, _inputDir, _attrFile).process()
+
+            # After processing all XML files save attribution file
+            _attrFile.Save()
 
         return self
 

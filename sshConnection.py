@@ -1,6 +1,6 @@
 import os
 import paramiko
-import Identity
+import identity
 
 
 class SSHConnection:
@@ -16,13 +16,13 @@ class SSHConnection:
         """ Creator class of the SSH transport object, without already opening the connection to the server
 
         :param _config:
-            _config is the name of the connection to be found in the Identity.py file
+            _config is the name of the connection to be found in the identity.py file
         """
         # Read configuration in config from Identity file
         _target = {
             f"""{_config}""": {}
         }
-        Identity.config_access(_target)
+        identity.config_access(_target)
         self.config = _target[_config]
 
     def open(self):

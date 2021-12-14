@@ -2,7 +2,7 @@ import pyodbc
 from pandas import read_sql, DataFrame
 from pyodbc import Connection
 
-import Identity
+import identity
 
 
 class SQLConnection:
@@ -15,7 +15,7 @@ class SQLConnection:
         target = {
             "sqlserver": {}
         }
-        Identity.config_access(target)
+        identity.config_access(target)
         try:
             self.conn = pyodbc.connect(
                 'Driver={Driver}; Server={Server}; Database={Database}; UID={Uid}; PWD={Pwd}'.format(
