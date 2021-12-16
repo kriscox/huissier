@@ -69,16 +69,16 @@ class InputFiles:
         for _zipFileName in _zipFileList:
             ''' extract a directory per zipfile is made to put all files '''
             # define the directory name as the name of zip-file without the extension
-            _zipFileDir = os.path.join("/", self.local_directory, _zipFileName.rsplit('.', 1)[0])
+            _zipFileDir = os.path.join(self.local_directory, _zipFileName.rsplit('.', 1)[0])
             # Extract zipfile into zipFileDir
-            _zipfile = zipfile.ZipFile(_zipFileName)
+            _zipfile = zipfile.ZipFile(os.path.join(self.local_directory, _zipFileName))
             _zipfile.extractall(_zipFileDir)
             # Add list of files to the variable files
             for _fileName in _zipfile.namelist():
-                self.files += os.path.join("/", _zipFileDir, _fileName)
+                self.files += os.path.join(_zipFileDir, _fileName)
 
         # Check if all files are extracted
-        for _f in [_f for _f in self.files if os.path.isfile(os.path.join("/", self.local_directory, _f))]:
+        for _f in [_f for _f in self.files if os.path.isfile(os.path.join(self.local_directory, _f))]:
             raise Exception("""Files not well unzipped, check for file {_f}""")
 
         return self
@@ -94,13 +94,13 @@ class InputFiles:
         """
         # Get all extracted directories starting with outputXML1 (normal format is outputXML1_yyyymmddhhmmss)
         _directories = [_d for _d in os.listdir(self.local_directory)
-                        if (os.path.isdir(os.path.join("/", self.local_directory, _d))
+                        if (os.path.isdir(os.path.join(self.local_directory, _d))
                             and
                             _d.startswith('outputXML1'))]
 
         # for each directory found, find the XML files
         for _dir in _directories:
-            _inputDir = os.path.join("/", self.local_directory, _dir)
+            _inputDir = os.path.join(self.local_directory, _dir)
             _inputFiles = [_f for _f in os.listdir(_inputDir)
                            if _f.endswith('.xml')]
 
@@ -109,7 +109,7 @@ class InputFiles:
                 continue
 
             # Create attribution file
-            _attrFileName = "ATTR_" + _dir.rsplit("_", 1)[0]
+            _attrFileName = "ATTR_" + _dir.rsplit("_", 1)[1]
             _attrFile = AttributionFile(_attrFileName)
 
             # process each XML file found
@@ -161,16 +161,16 @@ class InputFiles:
 
             # check all directories in the directory of the party
             _directories = [_d for _d in os.listdir(_conf["root"][_party])
-                            if os.path.isdir(os.path.join("/", _conf["root"][_party], _d))]
+                            if os.path.isdir(os.path.join(_conf["root"][_party], _d))]
 
             # zip each directory
             for _dir in _directories:
-                _directory = os.path.join("/", _conf["root"][_party], _dir)
+                _directory = os.path.join(_conf["root"][_party], _dir)
                 _zipFileName = _directory + ".zip"
                 _zipfile = zipfile.ZipFile(_zipFileName, mode="x")
                 # put each file in de archive
                 for _file in os.listdir(_directory):
-                    _zipfile.write(os.path.join("/", _directory, _file), _file)
+                    _zipfile.write(os.path.join(_directory, _file), _file)
                 _zipfile.close()
 
         return self

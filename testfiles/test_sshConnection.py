@@ -21,14 +21,14 @@ class SshConnectionCase(unittest.TestCase):
         _files = os.listdir(self.testDirTmp)
         if _files:
             for _file in _files:
-                os.remove(os.path.join("/", self.testDirTmp, _file))
+                os.remove(os.path.join(self.testDirTmp, _file))
 
 
     def tearDown(self) -> None:
         _files = os.listdir(self.testDirTmp)
         if _files:
             for _file in _files:
-                os.remove(os.path.join("/", self.testDirTmp, _file))
+                os.remove(os.path.join(self.testDirTmp, _file))
         self.conn.close()
 
 

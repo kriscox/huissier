@@ -1,5 +1,5 @@
 import os
-import xml.etree.ElementTree as xmlET
+from xml.etree.ElementTree import Element, SubElement, ElementTree, tostring
 
 import myconfig
 
@@ -7,7 +7,8 @@ import myconfig
 
 class AttributionFile:
     directory = myconfig.MyConfig()["root"]["sap"]
-    xmlTree: xmlET.ElementTree = xmlET.ElementTree(xmlET.Element("Dossiers"))
+    attrRoot: Element
+    attrTree: ElementTree
     filename = None
 
 
@@ -19,7 +20,9 @@ class AttributionFile:
         :param _filename: desired name of te attribution file
         :type _filename:
         """
-        self.filename = _filename
+        self.filename = _filename + ".xml"
+        self.attrRoot = Element("Dossiers")
+        self.attrTree = ElementTree(self.attrRoot)
         pass
 
 
@@ -33,17 +36,16 @@ class AttributionFile:
         :param _bailiff: number representing the bailiff (1: Leroy, 2: Modero)
         :type _bailiff:
         """
-        _dossierElement = xmlET.Element("Dossier")
-        _attributionElement = xmlET.SubElement(_dossierElement,
+        _dossierElement = SubElement(self.attrRoot, "Dossier")
+        _attributionElement = SubElement(_dossierElement,
                                                "AttributionMsg",
-                                               xmlns="urn:parking.brussels:agencyservice:model:v1")
-        xmlET.SubElement(_attributionElement,
+                                         xmlns="urn:parking.brussels:agencyservice:model:v1")
+        SubElement(_attributionElement,
                          "OGM",
-                         xmlns="").text = _vcs
-        xmlET.SubElement(_attributionElement,
+                   xmlns="").text = _vcs
+        SubElement(_attributionElement,
                          "ID",
-                         xmlns="").text = str(_bailiff)
-        self.xmlTree.getroot().append(_dossierElement)
+                   xmlns="").text = str(_bailiff)
         return self
 
 
@@ -54,8 +56,8 @@ class AttributionFile:
 
         :rtype: object
         """
-        _fileIO = open(os.path.join(self.directory, self.filename), "wb")
-        self.xmlTree.write(_fileIO, encoding='utf-8', xml_declaration=True)
+        _fileIO = open(os.path.join(self.directory, self.filename), 'wb')
+#        self.attrTree.write(_fileIO, encoding='utf-8', xml_declaration=True)
 
 
     def __del__(self):

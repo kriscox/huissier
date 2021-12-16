@@ -11,6 +11,7 @@ class VcsList:
     def __init__(self):
         pass
 
+
     def __contains__(self, item: str):
         for _item in self.List:
             if _item == item:
@@ -24,9 +25,14 @@ class VcsList:
         return self
 
 
+    def __set__(self, instance, value):
+        self = value
+        return self
+
+
     def save(self):
-        for item in self.List:
-            DBConn.Execute(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}', 1)""")
+#        for item in self.List:
+#            DBConn.Execute(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}', 1)""")
         return self
 
 

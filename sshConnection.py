@@ -62,10 +62,10 @@ class SSHConnection:
             path on local server
         """
         for _file in self.sftp.listdir(_source_path):
-            self.sftp.get(os.path.join("/", _source_path, _file), os.path.join("/", _destination_path, _file))
-            if os.path.exists(os.path.join("/", _destination_path, _file)):
+            self.sftp.get(os.path.join(_source_path, _file), _destination_path)
+            if os.path.exists(os.path.join(_destination_path, _file)):
                 # remove the downloaded files
-                self.sftp.remove(os.path.join("/", _source_path, _file))
+                self.sftp.remove(os.path.join(_source_path, _file))
             else:
                 raise Exception(f"""ERROR: File {_file} from directory {_source_path} not correctly downloaded""")
         return self
@@ -83,7 +83,7 @@ class SSHConnection:
         """
         for _file in os.listdir(_source_path):
             if _file.endswith(_extension):
-                self.sftp.put(os.path.join("/", _source_path, _file), os.path.join("/", _destination_path, _file))
+                self.sftp.put(os.path.join(_source_path, _file), os.path.join(_destination_path, _file))
                 # Check if file is uploaded successfully
                 if _file not in self.sftp.listdir(_destination_path):
                     raise Exception(f"""Error: File {_file} in directory {_source_path}not correctly uploaded""")

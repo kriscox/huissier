@@ -18,8 +18,8 @@ def lastRunSuccessful(_directories=None) -> bool:
         return true in case the last run was successfully cleaned up
     """
     if _directories is not None:
-        for _dir in _directories.values:
-            if os.listdir(_dir) != 0:
+        for _dir in _directories.values():
+            if len(os.listdir(_dir)) != 0:
                 return False
 
     return True
@@ -33,7 +33,7 @@ def move_files_tmp(_location: str):
     :type _location: name of the directory
     """
     for _f in os.listdir(_location):
-        _file = os.path.join("/", _location, _f)
+        _file = os.path.join(_location, _f)
         if os.path.isdir(_file):
             shutil.rmtree(_file, ignore_errors=True)
         else:
@@ -48,7 +48,7 @@ def clear_files(_location: str):
     :type _location: name of the directory
     """
     for _f in os.listdir(_location):
-        _file = os.path.join("/", _location, _f)
+        _file = os.path.join(_location, _f)
         if os.path.isdir(_file):
             shutil.rmtree(_file, ignore_errors=True)
         else:
@@ -81,12 +81,12 @@ if __name__ == '__main__':
     config = MyConfig()
 
     # check if last run did it's cleanup properly
-    if not lastRunSuccessful(config["root"]):
-        raise Exception("Last run wasn't successful, some files were trailing")
+#    if not lastRunSuccessful(config["root"]):
+#        raise Exception("Last run wasn't successful, some files were trailing")
 
     # Get files from SFTP site and unpack them
-    files: InputFiles = InputFiles(config["root"]["input"], config["download"]["sap"])
-    files.getInput()
+    files: InputFiles = InputFiles(config["download"]["sap"], config["root"]["input"])
+#    files.getInput()
 
     # Process files
     files.process(config)

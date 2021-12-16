@@ -12,11 +12,14 @@ class CreateFile:
     xmlTree = xmlET.ElementTree()
     filename: str = None
     directory = None
+    dateString = None  #YYYYMMDDhhmmss
     vcs_list = vcs.VcsList()
     attrFile: AttributionFile = None
     conf = myconfig.MyConfig()
-    moderoTree = xmlET.ElementTree(xmlET.Element("Dossiers")).getroot()
-    leroyTree = xmlET.ElementTree(xmlET.Element("Dossiers")).getroot()
+    moderoTree = xmlET.ElementTree(xmlET.Element("Dossiers"))
+    moderoRoot = moderoTree.getroot()
+    leroyTree = xmlET.ElementTree(xmlET.Element("Dossiers"))
+    leroyRoot = leroyTree.getroot()
 
 
     def __init__(self, _file, _inputDir, _attrFile: AttributionFile):
@@ -35,6 +38,7 @@ class CreateFile:
         self.readFile(_fileIO)
         _fileIO.close()
         self.attrFile = _attrFile
+        self.dateString = self.directory.rsplit("_", 1)[1]  # YYYYMMDDhhmmss
 
 
     def process(self):
@@ -95,9 +99,9 @@ class CreateFile:
         """
         # Add dossier to bailiff xml tree
         if _bailiff == "modero":
-            self.moderoTree.append(_dossier)
+            self.moderoRoot.append(_dossier)
         elif _bailiff == "leroy":
-            self.leroyTree.append(_dossier)
+            self.leroyRoot.append(_dossier)
         else:
             raise NotImplementedError("""Bailiff {_bailiff} not implemented yet in createfile.py""")
 
@@ -110,11 +114,10 @@ class CreateFile:
         # 2 types of documents in 2 different folders
         #    outputOTH1_YYYYMMDDhhmmss for the photo's
         #    outputPDF1_YYYYMMDDhhmmss for the documents
-        _dateString = self.directory.rsplit("_", 1)[0]  # YYYYMMDDhhmmss
         # for all the picture in
         for _type in {"outputOTH1_", "outputPDF1_"}:
-            _sourceDirectory = os.path.join(self.conf["root"]["input"], _type + _dateString)
-            _destDirectory = os.path.join(self.conf["root"][_bailiff], _type + _dateString)
+            _sourceDirectory = os.path.join(self.conf["root"]["input"], _type + self.dateString)
+            _destDirectory = os.path.join(self.conf["root"][_bailiff], _type + self.dateString)
             _documents = [_f for _f in os.listdir(_sourceDirectory)
                           if _f.startswith(_vcs)]
 
@@ -126,3 +129,17 @@ class CreateFile:
                 shutil.move(os.path.join(_sourceDirectory, _document), _destDirectory)
 
         return self
+
+
+    def save(self):
+        """
+        Save the attribution files in the corresponding directories
+        """
+        _directoryName = "outputXML1_" + self.dateString
+        _fileIOModero = open(os.path.join(self.conf["root"]["modero"], _directoryName, self.filename), "wb")
+        self.moderoTree.write(_fileIOModero, encoding='uft-8', xmldeclaration=True)
+        _fileIOLeroy = open(os.path.join(self.conf["root"]["leroy"], _directoryName, self.filename), "wb")
+        self.leroyTree.write(_fileIOLeroy, encoding='uft-8', xmldeclaration=True)
+
+    def __del__(self):
+        self.save()
