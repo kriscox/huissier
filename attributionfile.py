@@ -1,5 +1,6 @@
 import os
-from xml.etree.ElementTree import Element, SubElement, ElementTree, tostring
+from xml.etree.ElementTree import Element, ElementTree, SubElement, tostring
+import xml.etree.ElementTree
 
 import myconfig
 
@@ -10,6 +11,7 @@ class AttributionFile:
     attrRoot: Element
     attrTree: ElementTree
     filename = None
+    dirty: bool = False
 
 
     def __init__(self, _filename):
@@ -36,15 +38,16 @@ class AttributionFile:
         :param _bailiff: number representing the bailiff (1: Leroy, 2: Modero)
         :type _bailiff:
         """
+        self.dirty = True
         _dossierElement = SubElement(self.attrRoot, "Dossier")
         _attributionElement = SubElement(_dossierElement,
-                                               "AttributionMsg",
+                                         "AttributionMsg",
                                          xmlns="urn:parking.brussels:agencyservice:model:v1")
         SubElement(_attributionElement,
-                         "OGM",
+                   "OGM",
                    xmlns="").text = _vcs
         SubElement(_attributionElement,
-                         "ID",
+                   "ID",
                    xmlns="").text = str(_bailiff)
         return self
 
@@ -56,12 +59,15 @@ class AttributionFile:
 
         :rtype: object
         """
-        _fileIO = open(os.path.join(self.directory, self.filename), 'wb')
-#        self.attrTree.write(_fileIO, encoding='utf-8', xml_declaration=True)
+        if self.dirty:
+            _fileIO = open(os.path.join(self.directory, self.filename), 'wb')
+            self.attrTree.write(_fileIO, encoding='utf-8', xml_declaration=True)
+        self.dirty = False
 
 
     def __del__(self):
         """Save the file on deletion of the object.
 
+        Function executed at the
         """
         self.Save()

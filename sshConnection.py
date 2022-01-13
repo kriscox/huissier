@@ -62,10 +62,13 @@ class SSHConnection:
             path on local server
         """
         for _file in self.sftp.listdir(_source_path):
-            self.sftp.get(os.path.join(_source_path, _file), _destination_path)
+
+            self.sftp.get(os.path.join(_source_path, _file), os.path.join(_destination_path, _file))
             if os.path.exists(os.path.join(_destination_path, _file)):
                 # remove the downloaded files
-                self.sftp.remove(os.path.join(_source_path, _file))
+                # TODO: remove comment
+                #self.sftp.remove(os.path.join(_source_path, _file))
+                pass
             else:
                 raise Exception(f"""ERROR: File {_file} from directory {_source_path} not correctly downloaded""")
         return self

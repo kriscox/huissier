@@ -39,3 +39,7 @@ class VcsList:
     def __delete__(self, instance):
         self.save()
         return self
+
+
+    def __del__(self):
+        self.save()

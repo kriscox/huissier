@@ -68,7 +68,7 @@ def move_files_tmp(location):
             if os.path.isdir(ele_path):
                 shutil.rmtree(ele_path, ignore_errors=True)
             else:
-                shutil.move(ele_path, 'testfiles/tmp')
+                shutil.move(ele_path, '../testfiles/tmp')
     except Exception as e:
         print(e)
         raise Exception("Clear files not succeeded")
@@ -228,7 +228,6 @@ def copyFileToOutputFolder(file_path, dest_path):
 
 def processUpdateFile(folder, file):
     try:
-        global vcs_list
         tree = checkAnFormatXmlFileTree(folder, file)
         leroy_root = xmlET.Element("Dossiers")
         modero_root = xmlET.Element("Dossiers")
@@ -237,6 +236,7 @@ def processUpdateFile(folder, file):
         leroy_file = open(os.path.join(leroy_folder_root, folder, file), "wb")
         modero_file = open(os.path.join(modero_folder_root, folder, file), "wb")
         file_root = tree.getroot()
+        global vcs_list
         for dossier in file_root.iter("Dossier"):
             if dossier.find('VCS').text in vcs_list:
                 modero_tree.getroot().append(dossier)
@@ -434,3 +434,5 @@ try:
 
 except Exception as e:
     print(e)
+
+open()

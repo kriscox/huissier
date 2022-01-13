@@ -8,5 +8,43 @@
       <jdbc-url>jdbc:sqlserver://sv009</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="@pk51432.west-europe.azure.snowflakecomputing.com" uuid="214809d6-a66a-4e07-af86-21adeb1b4531">
+      <driver-ref>snowflake</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>net.snowflake.client.jdbc.SnowflakeDriver</jdbc-driver>
+      <jdbc-url>jdbc:snowflake://pk51432.west-europe.azure.snowflakecomputing.com:443?warehouse=PARKING_ANALYST&amp;role=G_AZURE_SNOWFLAKE_PARKINGBRUSSELS_DATAMANAGER</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="authenticator" value="externalbrowser" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="Sigmax DWH Centre" read-only="true" single-connection="true" uuid="f95139b7-7d86-4bff-9e95-51f16035c458">
+      <driver-ref>sqlserver.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://172.26.109.10;database=CC6-Parcbrux-Centre-PRD-DW</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="Sigmax DWH NO" read-only="true" single-connection="true" uuid="2a57098a-5ac2-43e8-a87d-97bdcd160208">
+      <driver-ref>sqlserver.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://172.26.109.10;database=CC6-ParcBruxAll-PRD-DW</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="Sigmax DWH SW" read-only="true" single-connection="true" uuid="07af88e9-2e7c-4ee0-a085-2088cdb482ed">
+      <driver-ref>sqlserver.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://172.26.109.10;database=CC6-Parcbrux-Sudouest-PRD-DW</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="Sigmax DWH NW" read-only="true" single-connection="true" uuid="1865cebf-7949-4dc1-802b-42e5622320d0">
+      <driver-ref>sqlserver.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://172.26.109.10;database=CC6-Parcbrux-Nordouest-PRD-DW</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

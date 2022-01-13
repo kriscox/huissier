@@ -12,7 +12,7 @@ class CreateFile:
     xmlTree = xmlET.ElementTree()
     filename: str = None
     directory = None
-    dateString = None  #YYYYMMDDhhmmss
+    dateString = None  # YYYYMMDDhhmmss
     vcs_list = vcs.VcsList()
     attrFile: AttributionFile = None
     conf = myconfig.MyConfig()
@@ -20,6 +20,9 @@ class CreateFile:
     moderoRoot = moderoTree.getroot()
     leroyTree = xmlET.ElementTree(xmlET.Element("Dossiers"))
     leroyRoot = leroyTree.getroot()
+    moderoDirty = False
+    leroyDirty = False
+    initial = True
 
 
     def __init__(self, _file, _inputDir, _attrFile: AttributionFile):
@@ -39,6 +42,8 @@ class CreateFile:
         _fileIO.close()
         self.attrFile = _attrFile
         self.dateString = self.directory.rsplit("_", 1)[1]  # YYYYMMDDhhmmss
+        if ('AUTRE' in _file):
+            self.initial = False
 
 
     def process(self):
@@ -48,20 +53,24 @@ class CreateFile:
 
         """
         # Process each retribution (XML element named Dossier)
+        if not (self.xmlTree.getroot()):
+            return self
         for _dossier in self.xmlTree.getroot().iter('Dossier'):
             _vcs = _dossier.find('VCS').text
-            # If the dossier is an annulation, then check for which bailiff and add.
-            if _dossier.find("Mouvement//Annulation//CodeAnnul") == 'X':
+            # If the dossier is an annulation or an update, then check for which bailiff and add.
+            if (not self.initial or
+                    (_dossier.find("Mouvement/Annulation/CodeAnnul") is not None and
+                     _dossier.find("Mouvement/Annulation/CodeAnnul").text == 'X')):
                 if _vcs in self.vcs_list:
                     self.addDossier("modero", _dossier)
-                    self.attrFile.Add(_dossier, 2)
+                    self.initial and self.attrFile.Add(_vcs, 2)
                 else:
                     self.addDossier("leroy", _dossier)
-                    self.attrFile.Add(_dossier, 1)
+                    self.initial and self.attrFile.Add(_vcs, 1)
             # New dossier is sent to modero and added to the list
             else:
                 self.addDossier("modero", _dossier)
-                self.attrFile.Add(_dossier, 2)
+                self.attrFile.Add(_vcs, 2)
                 self.vcs_list += _vcs
         return self
 
@@ -75,7 +84,8 @@ class CreateFile:
             .replace("/", "</") \
             .replace("", "") \
             .rstrip('\x00')
-        self.xmlTree = xmlET.ElementTree(xmlET.fromstring(_contentFile))
+        if _contentFile != '':
+            self.xmlTree = xmlET.ElementTree(xmlET.fromstring(_contentFile))
         return self
 
 
@@ -100,8 +110,10 @@ class CreateFile:
         # Add dossier to bailiff xml tree
         if _bailiff == "modero":
             self.moderoRoot.append(_dossier)
+            self.moderoDirty = True
         elif _bailiff == "leroy":
             self.leroyRoot.append(_dossier)
+            self.leroyDirty = True
         else:
             raise NotImplementedError("""Bailiff {_bailiff} not implemented yet in createfile.py""")
 
@@ -118,6 +130,8 @@ class CreateFile:
         for _type in {"outputOTH1_", "outputPDF1_"}:
             _sourceDirectory = os.path.join(self.conf["root"]["input"], _type + self.dateString)
             _destDirectory = os.path.join(self.conf["root"][_bailiff], _type + self.dateString)
+            if not (os.path.isdir(_sourceDirectory)):
+                break
             _documents = [_f for _f in os.listdir(_sourceDirectory)
                           if _f.startswith(_vcs)]
 
@@ -136,10 +150,23 @@ class CreateFile:
         Save the attribution files in the corresponding directories
         """
         _directoryName = "outputXML1_" + self.dateString
-        _fileIOModero = open(os.path.join(self.conf["root"]["modero"], _directoryName, self.filename), "wb")
-        self.moderoTree.write(_fileIOModero, encoding='uft-8', xmldeclaration=True)
-        _fileIOLeroy = open(os.path.join(self.conf["root"]["leroy"], _directoryName, self.filename), "wb")
-        self.leroyTree.write(_fileIOLeroy, encoding='uft-8', xmldeclaration=True)
+        # Write XML for Modero
+        if self.moderoDirty:
+            _moderoDirectoryName = os.path.join(self.conf["root"]["modero"], _directoryName)
+            if not (os.path.exists(_moderoDirectoryName)):
+                os.mkdir(_moderoDirectoryName)
+            _fileIOModero = open(os.path.join(_moderoDirectoryName, os.path.basename(self.filename)), "wb")
+            self.moderoTree.write(_fileIOModero, encoding='utf-8', xml_declaration=True)
+            self.moderoDirty = False
+        # Write XML for Leroy
+        if self.leroyDirty:
+            _leroyDirectoryName = os.path.join(self.conf["root"]["leroy"], _directoryName)
+            if not (os.path.exists(_leroyDirectoryName)):
+                os.mkdir(_leroyDirectoryName)
+            _fileIOLeroy = open(os.path.join(_leroyDirectoryName, os.path.basename(self.filename)), "wb")
+            self.leroyTree.write(_fileIOLeroy, encoding='utf-8', xml_declaration=True)
+            self.leroyDirty = False
+
 
     def __del__(self):
         self.save()

@@ -63,7 +63,6 @@ class InputFiles:
 
         :return Itself
         """
-
         # for all zip files in local_directory
         _zipFileList = [_f for _f in os.listdir(self.local_directory) if _f.endswith('.zip')]
         for _zipFileName in _zipFileList:
@@ -94,8 +93,7 @@ class InputFiles:
         """
         # Get all extracted directories starting with outputXML1 (normal format is outputXML1_yyyymmddhhmmss)
         _directories = [_d for _d in os.listdir(self.local_directory)
-                        if (os.path.isdir(os.path.join(self.local_directory, _d))
-                            and
+                        if (os.path.isdir(os.path.join(self.local_directory, _d)) and
                             _d.startswith('outputXML1'))]
 
         # for each directory found, find the XML files
@@ -114,7 +112,9 @@ class InputFiles:
 
             # process each XML file found
             for _file in _inputFiles:
-                CreateFile(_file, _inputDir, _attrFile).process()
+                createFile = CreateFile(_file, _inputDir, _attrFile)
+                createFile.process()
+                createFile.save()
 
             # After processing all XML files save attribution file
             _attrFile.Save()
@@ -146,7 +146,6 @@ class InputFiles:
             conn.putFiles(_conf["root"][_party], _conf["upload"][_party], _extension)
 
         return self
-
 
     def pack(self, _conf):
         """Zip the result files to the places

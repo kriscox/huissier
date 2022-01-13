@@ -81,12 +81,12 @@ if __name__ == '__main__':
     config = MyConfig()
 
     # check if last run did it's cleanup properly
-#    if not lastRunSuccessful(config["root"]):
-#        raise Exception("Last run wasn't successful, some files were trailing")
+    if not lastRunSuccessful(config["root"]):
+        raise Exception("Last run wasn't successful, some files were trailing")
 
     # Get files from SFTP site and unpack them
     files: InputFiles = InputFiles(config["download"]["sap"], config["root"]["input"])
-#    files.getInput()
+    files.getInput()
 
     # Process files
     files.process(config)
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     files.pack(config)
 
     # Upload files
-    files.upload(config)
+    #files.upload(config)
 
     # Clean up temporary files
-    cleanUp(config)
+    #cleanUp(config)
