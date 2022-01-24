@@ -1,5 +1,5 @@
 credentials = {
-    "sftp": {
+    "sap": {
         "host": "cftp.sec.brussels",
         "port": 2222,
         "user": "***",
@@ -13,7 +13,7 @@ credentials = {
     },
     "sqlserver": {
         "Driver": "ODBC Driver 17 for SQL Server",
-        "Server": "sv009"
+        "Server": "sv009",
         "Uid": "***",
         "Pwd": "***"
     }
