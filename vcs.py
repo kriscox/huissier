@@ -31,8 +31,8 @@ class VcsList:
 
 
     def save(self):
-#        for item in self.List:
-#            DBConn.Execute(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}', 1)""")
+        for item in self.List:
+            DBConn.Execute(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}', 1)""")
         return self
 
 

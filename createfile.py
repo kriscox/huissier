@@ -16,10 +16,10 @@ class CreateFile:
     vcs_list = vcs.VcsList()
     attrFile: AttributionFile = None
     conf = myconfig.MyConfig()
-    moderoTree = xmlET.ElementTree(xmlET.Element("Dossiers"))
-    moderoRoot = moderoTree.getroot()
-    leroyTree = xmlET.ElementTree(xmlET.Element("Dossiers"))
-    leroyRoot = leroyTree.getroot()
+    moderoTree = None
+    moderoRoot = None
+    leroyTree = None
+    leroyRoot = None
     moderoDirty = False
     leroyDirty = False
     initial = True
@@ -42,6 +42,10 @@ class CreateFile:
         _fileIO.close()
         self.attrFile = _attrFile
         self.dateString = self.directory.rsplit("_", 1)[1]  # YYYYMMDDhhmmss
+        self.moderoTree = xmlET.ElementTree(xmlET.Element("Dossiers"))
+        self.moderoRoot = self.moderoTree.getroot()
+        self.leroyTree = xmlET.ElementTree(xmlET.Element("Dossiers"))
+        self.leroyRoot = self.leroyTree.getroot()
         if ('AUTRE' in _file):
             self.initial = False
 

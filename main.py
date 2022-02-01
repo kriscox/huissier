@@ -95,7 +95,7 @@ if __name__ == '__main__':
     files.pack(config)
 
     # Upload files
-    #files.upload(config)
+    files.upload(config)
 
     # Clean up temporary files
-    #cleanUp(config)
+    cleanUp(config)

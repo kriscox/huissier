@@ -66,8 +66,7 @@ class SSHConnection:
             self.sftp.get(os.path.join(_source_path, _file), os.path.join(_destination_path, _file))
             if os.path.exists(os.path.join(_destination_path, _file)):
                 # remove the downloaded files
-                # TODO: remove comment
-                #self.sftp.remove(os.path.join(_source_path, _file))
+                self.sftp.remove(os.path.join(_source_path, _file))
                 pass
             else:
                 raise Exception(f"""ERROR: File {_file} from directory {_source_path} not correctly downloaded""")
