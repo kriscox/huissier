@@ -13,7 +13,7 @@ class CreateFile:
     filename: str = None
     directory = None
     dateString = None  # YYYYMMDDhhmmss
-    vcs_list = vcs.VcsList()
+    vcs_list = None
     attrFile: AttributionFile = None
     conf = myconfig.MyConfig()
     moderoTree = None
@@ -25,7 +25,7 @@ class CreateFile:
     initial = True
 
 
-    def __init__(self, _file, _inputDir, _attrFile: AttributionFile):
+    def __init__(self, _file, _inputDir, _attrFile: AttributionFile, _vcs_list):
         """Create an object representing the XML content of the file _file in directory _inputDir
 
                     :param _file: file containing the XML tree
@@ -35,6 +35,7 @@ class CreateFile:
                     :param _attrFile: attribution file object of current attribution
                     :type _attrFile:
                     """
+        self.vcs_list = _vcs_list
         self.filename = os.path.join(_inputDir, _file)
         self.directory = _inputDir
         _fileIO = open(self.filename, "r", encoding="utf8")

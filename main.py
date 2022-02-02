@@ -2,6 +2,7 @@ import os
 import shutil
 
 import SqlConnection
+import vcs
 from inputfiles import InputFiles
 from myconfig import MyConfig
 
@@ -80,12 +81,15 @@ if __name__ == '__main__':
     # read config from file myconfig.py
     config = MyConfig()
 
+    # Create VCS_list
+    vcs_list = vcs.VcsList()
+
     # check if last run did it's cleanup properly
     if not lastRunSuccessful(config["root"]):
         raise Exception("Last run wasn't successful, some files were trailing")
 
     # Get files from SFTP site and unpack them
-    files: InputFiles = InputFiles(config["download"]["sap"], config["root"]["input"])
+    files: InputFiles = InputFiles(config["download"]["sap"], config["root"]["input"], vcs_list)
     files.getInput()
 
     # Process files
@@ -96,6 +100,9 @@ if __name__ == '__main__':
 
     # Upload files
     files.upload(config)
+
+    # Add new VCS in database
+    vcs_list.save()
 
     # Clean up temporary files
     cleanUp(config)

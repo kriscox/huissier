@@ -6,10 +6,11 @@ DBConn: SQLConnection = SQLConnection()
 
 class VcsList:
     List = []
-
+    dirty = False
 
     def __init__(self):
         pass
+        self.dirty = False
 
 
     def __contains__(self, item: str):
@@ -21,7 +22,10 @@ class VcsList:
 
 
     def __add__(self, item: str):
+        if item in self:
+            return self
         self.List.append(item)
+        self.dirty = True
         return self
 
 
@@ -31,8 +35,10 @@ class VcsList:
 
 
     def save(self):
-        for item in self.List:
-            DBConn.Execute(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}', 1)""")
+        if self.dirty:
+            for item in self.List:
+                DBConn.Execute(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}', 1)""")
+
         return self
 
 

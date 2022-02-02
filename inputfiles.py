@@ -15,9 +15,10 @@ class InputFiles:
     remote_directory: str = None
     local_directory: str = None
     files = []
+    vcs_list = None
 
 
-    def __init__(self, _remote_directory, _local_directory):
+    def __init__(self, _remote_directory, _local_directory, _vcs_list):
         """Return an object to hold the files
 
         :param _remote_directory :
@@ -27,6 +28,7 @@ class InputFiles:
         """
         self.remote_directory = _remote_directory
         self.local_directory = _local_directory
+        self.vcs_list = _vcs_list
 
 
     def getInput(self):
@@ -112,7 +114,7 @@ class InputFiles:
 
             # process each XML file found
             for _file in _inputFiles:
-                createFile = CreateFile(_file, _inputDir, _attrFile)
+                createFile = CreateFile(_file, _inputDir, _attrFile, self.vcs_list)
                 createFile.process()
                 createFile.save()
 
