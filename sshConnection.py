@@ -52,7 +52,7 @@ class SSHConnection:
         """
         return self.conn.is_active()
 
-    def getFiles(self, _source_path: str, _destination_path: str):
+    def getFiles(self, _source_path: str, _destination_path: str, _remove: bool = True):
         """ Retrieves all files on the SSH server and puts then in the given path. After each download it removes the original file on the server side.
 
         :rtype: sshConnection
@@ -64,11 +64,11 @@ class SSHConnection:
         for _file in self.sftp.listdir(_source_path):
 
             self.sftp.get(os.path.join(_source_path, _file), os.path.join(_destination_path, _file))
-            if os.path.exists(os.path.join(_destination_path, _file)):
+            if _remove and os.path.exists(os.path.join(_destination_path, _file)):
                 # remove the downloaded files
                 self.sftp.remove(os.path.join(_source_path, _file))
                 pass
-            else:
+            elif _remove:
                 raise Exception(f"""ERROR: File {_file} from directory {_source_path} not correctly downloaded""")
         return self
 
