@@ -37,8 +37,11 @@ class VcsList:
     def save(self):
         if self.dirty:
             for item in self.List:
-                DBConn.Execute(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}', 1)""")
-
+                try:
+                    DBConn.Execute(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}', 1)""")
+                except:
+                    print(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}',1)""")
+                    raise
         return self
 
 
