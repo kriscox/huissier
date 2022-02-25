@@ -42,6 +42,21 @@ class SQLConnection:
             print(e)
             raise Exception("Query execution error")
 
+    def Execute_No_Result(self, query, param=None):
+        self.row = 0
+        try:
+            if param is None:
+                self.data = None
+                self.conn.execute(query)
+            else:
+                self.data = None
+                self.conn.execute(query, params=param)
+
+        except pyodbc.DatabaseError as e:
+            print(e)
+            raise Exception("Query execution error")
+
+
     def Next(self):
         if self.data.size <= self.row:
             return None
