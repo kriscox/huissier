@@ -38,7 +38,7 @@ class VcsList:
         if self.dirty:
             for item in self.List:
                 try:
-                    DBConn.Execute(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}', 1)""")
+                    DBConn.Execute_No_Result(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}', 1)""")
                 except:
                     print(f"""INSERT INTO HUISSIER.dbo.CASES VALUES('{item}',1)""")
                     raise
