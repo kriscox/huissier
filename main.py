@@ -1,3 +1,4 @@
+#!/opt/scripts/bin/launch.sh -e huissier
 import os
 import shutil
 
