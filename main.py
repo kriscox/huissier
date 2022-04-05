@@ -1,4 +1,4 @@
-#!/opt/scripts/bin/launch.sh -e huissier
+#!/opt/scripts/bin/launch.sh -e huissier 
 import os
 import shutil
 
@@ -39,7 +39,8 @@ def move_files_tmp(_location: str):
         if os.path.isdir(_file):
             shutil.rmtree(_file, ignore_errors=True)
         else:
-            shutil.move(_file, '/tmp')
+            if not os.path.exists(os.path.join('/tmp', _f)):
+                shutil.move(_file, '/tmp')
 
 
 
@@ -68,8 +69,7 @@ def cleanUp(_config):
     # copy attribution file to /tmp
     move_files_tmp(_config["root"]["sap"])
     # remove all files in the tmp directories
-    for _key in [_key for _key in _config["root"].keys()
-                 if "sap" != _key]:
+    for _key in [_key for _key in _config["root"].keys()]:
         clear_files(_config["root"][_key])
 
 

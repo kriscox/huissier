@@ -53,7 +53,7 @@ class InputFiles:
         conn = SSHConnection("sap").open()
 
         # Download all files and remove them from sap
-        conn.getFiles(self.remote_directory, self.local_directory, False)
+        conn.getFiles(self.remote_directory, self.local_directory, True)
         return self
 
 

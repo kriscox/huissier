@@ -1,17 +1,17 @@
 myconfig = {
     "root": {
-        "leroy": r'C:\Users\kcox\huissier\leroy',
-        "modero": r'C:\Users\kcox\huissier\modero',
-        "sap": r'C:\Users\kcox\huissier\sap',
-        "input": r'C:\Users\kcox\huissier\input'
+        "leroy": "/opt/scripts/huissier/tmp/leroy",
+        "modero": "/opt/scripts/huissier/tmp/modero",
+        "sap": "/opt/scripts/huissier/tmp/sap",
+        "input": "/opt/scripts/huissier/tmp/input_files"
     },
     "upload": {
-        "leroy": "/tmp/leroy/",
-        "modero": "/tmp/modero/",
-        "sap": "/opt/tmp/sap/upload/"
+        "leroy": "/data/leroy/ToLeroy",
+        "modero": "/data/modero/ToModero2",
+        "sap": "/OAA_Bailiff_ESend/Parking/"
     },
     "download": {
-        "sap": "/opt/tmp/sap/download/"
+        "sap": "/OAA_Bailiff_EReceive/Parking/"
     }
 }
 
